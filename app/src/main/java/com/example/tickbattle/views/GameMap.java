@@ -1,48 +1,58 @@
 package com.example.tickbattle.views;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.RelativeLayout;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+;import ua.org.tenletters.widget.DiagonalScrollView;
 
-public class GameMap extends FrameLayout {
-    private float mX;
-    private float mY;
-    private
-    int pointerID;
+public class GameMap extends DiagonalScrollView {
+    private float startX;
+    private float startY;
+    private int startPointerID;
     GridLayout grid;
-    private float scale = 1f;
-    private ScaleGestureDetector scaleDetector;
+    private float currentScale = 1f;
+    private final ScaleGestureDetector scaleDetector;
 
     public GameMap(Context context) {
         super(context);
-        int w = 7;
-        int h = 5;
+
+
+        FrameLayout.LayoutParams mainLayoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        this.setLayoutParams(mainLayoutParams);
+
         scaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 
+
+        int w = 15;
+        int h = 10;
+
         grid = new GridLayout(this.getContext());
-
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout
-                .LayoutParams.WRAP_CONTENT);
-        grid.setLayoutParams(layoutParams);
+        grid.setColumnCount(h);
+        grid.setRowCount(w);
         grid.setUseDefaultMargins(true);
-        grid.setBackgroundColor(Color.BLUE);
-        grid.setColumnCount(w);
-        grid.setRowCount(h);
-
 
         for(int i = 0; i < h; i += 1) {
-            for(int j= 0; j < w; j += 1) {
+            for(int j = 0; j < w; j += 1) {
                 grid.addView(new ExtendedButton(grid.getContext()));
             }
         }
+
         addView(grid);
     }
+
+
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -55,16 +65,18 @@ public class GameMap extends FrameLayout {
 
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
             case MotionEvent.ACTION_DOWN: // первое касание
-                this.mX = X;
-                this.mY = Y;
-                this.pointerID = pointerID;
+                this.startX = X;
+                this.startY = Y;
+                this.startPointerID = pointerID;
+                System.out.println("DOWN" + String.valueOf(event.getX()));
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (pointerID != this.pointerID) break;
+                if (pointerID != this.startPointerID) break;
                 float coef = 0.1f;
-                float dx = (X - mX);
-                float dy = (Y - mY);
+                float dx = (X - startX);
+                float dy = (Y - startY);
 
                 if( Math.abs(dx) <= 80 && Math.abs(dy) <= 80) break;
 
@@ -74,14 +86,9 @@ public class GameMap extends FrameLayout {
                 grid.setX(new_x);
                 grid.setY(new_y);
                 break;
-            case MotionEvent.ACTION_UP:
-                if(Math.abs(X - mX) <= 80 && Math.abs(Y - mY) <= 80) {
-                    System.out.println("KEY UP: " + String.valueOf(Math.abs(X - mX)) + " "  + String.valueOf(Math.abs(Y - mY)));
-                }
-                break;
-
         }
-        return super.dispatchTouchEvent(event);
+        super.dispatchTouchEvent(event);
+        return true;
     }
 
 
@@ -108,13 +115,13 @@ public class GameMap extends FrameLayout {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactor = Math.abs(detector.getScaleFactor());
-            if(scale * scaleFactor < 0.3) return true;
-            if(scale * scaleFactor > 1.5) return true;
+            if(currentScale * scaleFactor < 0.3) return true;
+            if(currentScale * scaleFactor > 1.5) return true;
 
-            scale *= scaleFactor;
-            grid.setScaleX(scale);
-            grid.setScaleY(scale);
-            System.out.println("SCALE: " + String.valueOf(scale));
+            currentScale *= scaleFactor;
+            grid.setScaleX(currentScale);
+            grid.setScaleY(currentScale);
+            System.out.println("SCALE: " + String.valueOf(currentScale));
             return true;
         }
     }
