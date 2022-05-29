@@ -55,6 +55,6 @@ public class GameThread extends Thread {
     }
 
     public void setRunning(boolean running)  {
-        this.running= running;
+        this.running = running;
     }
 }

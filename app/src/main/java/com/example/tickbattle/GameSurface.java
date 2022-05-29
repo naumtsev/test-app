@@ -9,7 +9,6 @@ import android.view.SurfaceView;
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
-    private MountainBlock mountainBlock;
 
     public GameSurface(Context context)  {
         super(context);
@@ -18,19 +17,17 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update()  {
-        this.mountainBlock.update();
+
     }
 
     @Override
     public void draw(Canvas canvas)  {
         super.draw(canvas);
 
-        this.mountainBlock.draw(canvas);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        this.mountainBlock = new MountainBlock(this, 1, 100 ,100);
 
         this.gameThread = new GameThread(this, holder);
         this.gameThread.setRunning(true);
@@ -45,7 +42,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         boolean retry = true;
-        while(retry) {
+        while (retry) {
             try {
                 this.gameThread.setRunning(false);
                 this.gameThread.join();

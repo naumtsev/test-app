@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.example.tickbattle.objects.Direction;
+import com.example.tickbattle.objects.OnMoveListener;
+import com.example.tickbattle.objects.OnSelectBlockListener;
 import com.example.tickbattle.views.GameMap;
+import com.example.tickbattle.views.MoveController;
 
 public class MainActivity extends Activity  {
     @SuppressLint("ClickableViewAccessibility")
@@ -34,10 +37,26 @@ public class MainActivity extends Activity  {
 
 
         FrameLayout gameMapLayout = findViewById(R.id.gameMapLayout);
-
         LinearLayout menuLayout = findViewById(R.id.menuLayout);
+        ConstraintLayout moveControllerLayout = findViewById(R.id.moveControllerLayout);
 
-        gameMapLayout.addView(new GameMap(gameMapLayout.getContext()));
+
+        gameMapLayout.addView(new GameMap(gameMapLayout.getContext(), new OnSelectBlockListener() {
+            @Override
+            public void onSelectBlock(int x, int y) {
+                System.out.println(String.valueOf(x) + " " + String.valueOf(y) + " are selected");
+            }
+        }));
+
+
+        moveControllerLayout.addView(new MoveController(moveControllerLayout.getContext(), new OnMoveListener() {
+            @Override
+            public void onMove(Direction direction) {
+                System.out.println(direction.toString());
+            }
+        }));
+
+
 
         menuLayout.addView(new Button(menuLayout.getContext()));
 
@@ -46,8 +65,6 @@ public class MainActivity extends Activity  {
         menuLayout.addView(new Button(menuLayout.getContext()));
 
         menuLayout.addView(new Button(menuLayout.getContext()));
-
-
 
 ////        this.setContentView(new GameSurface(this));
     }

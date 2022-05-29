@@ -1,4 +1,4 @@
-package com.example.tickbattle.models;
+package com.example.tickbattle.objects;
 
 
 import android.graphics.Canvas;
