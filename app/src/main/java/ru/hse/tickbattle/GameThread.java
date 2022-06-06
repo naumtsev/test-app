@@ -1,4 +1,4 @@
-package com.example.tickbattle;
+package ru.hse.tickbattle;
 
 
 import android.graphics.Canvas;

@@ -1,21 +1,14 @@
-package com.example.tickbattle.views;
+package ru.hse.tickbattle.views;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.TextView;
-;import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 
-import com.example.tickbattle.Config;
-import com.example.tickbattle.R;
-import com.example.tickbattle.Icons;
-import com.example.tickbattle.objects.OnSelectBlockListener;
+import ru.hse.tickbattle.objects.OnSelectBlockListener;
+
+import java.util.ArrayList;
 
 import ua.org.tenletters.widget.DiagonalScrollView;
 
@@ -24,32 +17,40 @@ public class GameMap extends DiagonalScrollView {
     GridLayout grid;
     private float currentScale = 1f;
     private final ScaleGestureDetector scaleDetector;
+    private  ArrayList<Block> blocks;
+    int w, h;
+    private final OnSelectBlockListener selectBlockListener;
+
     public GameMap(Context context, OnSelectBlockListener selectBlockListener) {
         super(context);
-
-
+        this.selectBlockListener = selectBlockListener;
         FrameLayout.LayoutParams mainLayoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         this.setLayoutParams(mainLayoutParams);
 
         scaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+    }
 
-        int w = 10;
-        int h = 10;
+
+    public void init(int w, int h) {
+        this.w = w;
+        this.h = h;
 
         grid = new GridLayout(this.getContext());
         grid.setColumnCount(h);
         grid.setRowCount(w);
         grid.setUseDefaultMargins(true);
 
+        blocks = new ArrayList<>();
+
         for (int i = 0; i < h; i += 1) {
             for (int j = 0; j < w; j += 1) {
-                grid.addView(new Block(grid.getContext(), selectBlockListener,  j, i));
+                Block block = new Block(grid.getContext(), selectBlockListener,  j, i);
+                blocks.add(block);
+                grid.addView(block);
             }
         }
-
         addView(grid);
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -58,6 +59,9 @@ public class GameMap extends DiagonalScrollView {
         return true;
     }
 
+    public ArrayList<Block> getBlocks()  {
+        return blocks;
+    }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override

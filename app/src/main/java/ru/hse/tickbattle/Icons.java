@@ -1,4 +1,4 @@
-package com.example.tickbattle;
+package ru.hse.tickbattle;
 
 public class Icons {
     public static final String LEFT_ARROW ="\uF060";

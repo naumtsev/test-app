@@ -1,4 +1,4 @@
-package com.example.tickbattle.objects;
+package ru.hse.tickbattle.objects;
 
 public enum Direction {
     LEFT,

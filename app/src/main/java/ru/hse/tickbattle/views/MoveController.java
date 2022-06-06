@@ -1,4 +1,4 @@
-package com.example.tickbattle.views;
+package ru.hse.tickbattle.views;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -10,10 +10,10 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.example.tickbattle.Icons;
-import com.example.tickbattle.R;
-import com.example.tickbattle.objects.Direction;
-import com.example.tickbattle.objects.OnMoveListener;
+import ru.hse.tickbattle.Icons;
+import ru.hse.tickbattle.objects.Direction;
+import ru.hse.tickbattle.objects.OnMoveListener;
+import ru.hse.tickbattle.R;
 
 public class MoveController extends RelativeLayout {
     private static final int BUTTON_WIDTH = 100;

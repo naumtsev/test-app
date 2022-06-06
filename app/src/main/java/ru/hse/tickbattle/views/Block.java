@@ -1,4 +1,4 @@
-package com.example.tickbattle.views;
+package ru.hse.tickbattle.views;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,23 +10,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.example.tickbattle.Config;
-import com.example.tickbattle.Icons;
-import com.example.tickbattle.R;
-import com.example.tickbattle.objects.OnSelectBlockListener;
+import ru.hse.tickbattle.Config;
+import ru.hse.tickbattle.Icons;
+import ru.hse.tickbattle.R;
+import ru.hse.tickbattle.objects.OnSelectBlockListener;
 
 public class Block extends FrameLayout {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
-    private ExtendedButton btn;
-    private TextView units;
+    private final ExtendedButton btn;
+    private final TextView units;
 
-    private TextView leftArrow;
-    private TextView rightArrow;
-    private TextView upArrow;
-    private TextView downArrow;
-    private OnSelectBlockListener selectBlockListener;
+    private final TextView leftArrow;
+    private final TextView rightArrow;
+    private final TextView upArrow;
+    private final TextView downArrow;
+    private final OnSelectBlockListener selectBlockListener;
 
     public Block(@NonNull Context context, OnSelectBlockListener selectBlockListener, int x, int y) {
         super(context);
@@ -91,6 +91,10 @@ public class Block extends FrameLayout {
         addView(units);
     }
 
+    void setHidden(boolean hidden) {
+       setBackgroundColor(Color.BLACK);
+    }
+
     void setBlockText(@NonNull String text) {
         btn.setText(text);
     }
@@ -126,14 +130,6 @@ public class Block extends FrameLayout {
         }
     }
 
-    public void setVisableUpArrow(boolean visable) {
-        if (visable) {
-            leftArrow.setVisibility(View.VISIBLE);
-        } else {
-            leftArrow.setVisibility(View.INVISIBLE);
-        }
-    }
-
     public void setVisableDownArrow(boolean visable) {
         if (visable) {
             downArrow.setVisibility(View.VISIBLE);
@@ -142,6 +138,13 @@ public class Block extends FrameLayout {
         }
     }
 
+    public void setVisableUpArrow(boolean visable) {
+        if (visable) {
+            upArrow.setVisibility(View.VISIBLE);
+        } else {
+            upArrow.setVisibility(View.INVISIBLE);
+        }
+    }
 
     class ExtendedButton extends androidx.appcompat.widget.AppCompatButton implements View.OnClickListener {
         public ExtendedButton(Context context) {

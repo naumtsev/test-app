@@ -1,4 +1,4 @@
-package com.example.tickbattle;
+package ru.hse.tickbattle;
 
 public class Config {
     public static int BLOCK_SIZE = 200;
