@@ -51,7 +51,7 @@ public class MainActivity extends Activity  {
         LoginServiceGrpc.LoginServiceStub stub = LoginServiceGrpc.newStub(channel);
 
         Services.LoginRequest request = Services.LoginRequest
-                .newBuilder().setName("Android").setPassword("Test").build();
+                .newBuilder().setName("Android").setPassword("ANTON").build();
 //
         stub.login(request, new StreamObserver<Services.LoginResponse>() {
             @Override
@@ -61,7 +61,8 @@ public class MainActivity extends Activity  {
 
             @Override
             public void onError(Throwable t) {
-                System.out.println("ERROR\n\n");
+                System.out.println("\n\n\n" + t.getMessage());
+                System.out.println("ERROR\n\n\n");
 
             }
 
