@@ -10,9 +10,9 @@ public class Icons {
     public static final String DOWN_ARROW ="\uF063";
 
 
-    public static final String CROWN ="\uF521";
+    public static final String CASTLE ="\uF521";
 
-    public static final String MOUNTAIN ="\uF6FD";
+    public static final String WALL ="\uF6FD";
 
-    public static final String FORT ="\uF015";
+    public static final String FARM ="\uF015";
 }

@@ -15,7 +15,7 @@ import ru.hse.tickbattle.Icons;
 import ru.hse.tickbattle.R;
 import ru.hse.tickbattle.objects.OnSelectBlockListener;
 
-public class Block extends FrameLayout {
+public class BlockView extends FrameLayout {
     private final int x;
     private final int y;
 
@@ -28,7 +28,7 @@ public class Block extends FrameLayout {
     private final TextView downArrow;
     private final OnSelectBlockListener selectBlockListener;
 
-    public Block(@NonNull Context context, OnSelectBlockListener selectBlockListener, int x, int y) {
+    public BlockView(@NonNull Context context, OnSelectBlockListener selectBlockListener, int x, int y) {
         super(context);
         this.x = x;
         this.y = y;
@@ -38,18 +38,19 @@ public class Block extends FrameLayout {
         btn = new ExtendedButton(this.getContext());
 
         Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.fa_thin_100);
+        Typeface typefaceNumbers = ResourcesCompat.getFont(getContext(), R.font.numbers);
 
         btn.setTypeface(typeface);
         btn.setText(String.valueOf(btn.getHeight()));
 
         units = new TextView(this.getContext());
-        units.setTextSize(15);
-        units.setTypeface(typeface);
+        units.setTextSize(30);
+        units.setTypeface(typefaceNumbers);
         units.setTextColor(Color.BLACK);
 
 
         LayoutParams lp_text = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp_text.setMargins(10, 0, 0, 0);
+        lp_text.setMargins(10, -15, 0, 0);
         units.setLayoutParams(lp_text);
         units.setElevation(1000);
 
@@ -88,8 +89,6 @@ public class Block extends FrameLayout {
         downArrow.setX(Config.BLOCK_SIZE / 2f + 14);
         downArrow.setVisibility(View.INVISIBLE);
         downArrow.setTextColor(Color.BLACK);
-        setUnitText("132");
-        setBlockText(Icons.CROWN);
 
 
         addView(btn);
@@ -99,11 +98,6 @@ public class Block extends FrameLayout {
         addView(downArrow);
         addView(units);
 
-
-    }
-
-    public void setHidden(boolean hidden) {
-       setBackgroundColor(Color.BLACK);
     }
 
     public void setBlockText(@NonNull String text) {
@@ -123,7 +117,6 @@ public class Block extends FrameLayout {
             selectBlockListener.onSelectBlock(x, y);
         }
     }
-
 
     public void setVisableRightArrow(boolean visable) {
         if (visable) {
@@ -164,7 +157,6 @@ public class Block extends FrameLayout {
             setSoundEffectsEnabled(false);
             setWidth(Config.BLOCK_SIZE);
             setHeight(Config.BLOCK_SIZE);
-            setBackgroundColor(Color.parseColor("#dcdcdc"));
             setTextSize(Config.INCON_FONT_SIZE);
             setTextAlignment(TEXT_ALIGNMENT_GRAVITY);
             setOnClickListener(this);
@@ -173,7 +165,7 @@ public class Block extends FrameLayout {
 
         @Override
         public void onClick(View v) {
-            Block.this.selectBlock();
+            BlockView.this.selectBlock();
         }
     }
 }

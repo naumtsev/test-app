@@ -11,19 +11,16 @@ import android.widget.LinearLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.util.concurrent.Executors;
+import java.util.Random;
 
-import io.grpc.okhttp.OkHttpChannelBuilder;
-import io.grpc.stub.StreamObserver;
+import ru.hse.Game;
 import ru.hse.LoginServiceGrpc;
-import ru.hse.Services;
-import ru.hse.tickbattle.R;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import ru.hse.tickbattle.objects.GameController;
-import ru.hse.tickbattle.views.GameMap;
-import ru.hse.tickbattle.views.MoveController;
+import ru.hse.tickbattle.controllers.GameController;
+import ru.hse.tickbattle.views.GameMapView;
+import ru.hse.tickbattle.controllers.MoveController;
 
 public class MainActivity extends Activity  {
     @SuppressLint("ClickableViewAccessibility")
@@ -73,21 +70,78 @@ public class MainActivity extends Activity  {
 //        });
 //
 //        System.out.println(res.getSuccess());
-        System.out.println("WRITE END\n\n");
 
         FrameLayout gameMapLayout = findViewById(R.id.gameMapLayout);
         LinearLayout menuLayout = findViewById(R.id.menuLayout);
         ConstraintLayout moveControllerLayout = findViewById(R.id.moveControllerLayout);
 
         GameController gameController = new GameController();
-        GameMap gameMap = new GameMap(gameMapLayout.getContext(), gameController);
+        GameMapView gameMapView = new GameMapView(gameMapLayout.getContext(), gameController);
         MoveController moveController = new MoveController(moveControllerLayout.getContext(), gameController);
 
-        gameController.init(gameMap);
 
+        // --------------------------------
+
+
+        Game.GameStateResponse.Builder gameStateResponseBuilder = Game.GameStateResponse.newBuilder();
+        // state
+        gameStateResponseBuilder.setGameState(Game.GameStateResponse.GameState.IN_PROGRESS);
+
+        // player
+        Game.Player.Builder playerBuilder1 = Game.Player.newBuilder();
+        playerBuilder1.setColor("#9A57E0").setCountArmy(1555).setIsAlive(true).setLogin("admin").build();
+        gameStateResponseBuilder.setPlayer(playerBuilder1.build());
+
+        // playerList
+
+        Game.PlayerList.Builder playerListBuilder = Game.PlayerList.newBuilder();
+        playerListBuilder.addPlayer(playerBuilder1.build());
+
+        Game.Player.Builder playerBuilder2 = Game.Player.newBuilder();
+        playerBuilder2.setColor("#38FF2E").setCountArmy(43).setIsAlive(true).setLogin("enemy").build();
+        playerListBuilder.addPlayer(playerBuilder2.build());
+
+        //
+        Game.GameMap.Builder gameMapBuilder = Game.GameMap.newBuilder();
+        gameMapBuilder.setWidth(15);
+        gameMapBuilder.setHeight(20);
+
+        Game.BlockList.Builder blockListBuilder = Game.BlockList.newBuilder();
+        for(int i = 0; i < gameMapBuilder.getHeight(); i += 1){
+            for (int j = 0; j < gameMapBuilder.getWidth(); j += 1) {
+                Game.Block.Builder blockBuilder  = Game.Block.newBuilder();
+
+
+
+                Game.EmptyBlock.Builder emptyBlockBuilder = Game.EmptyBlock.newBuilder();
+                emptyBlockBuilder.setCountArmy(i* gameMapBuilder.getWidth() + j);
+                blockBuilder.setX(j);
+                blockBuilder.setY(i);
+                if (i % 6 < 4 && j > 3 && j % 9 < 4) {
+                    blockBuilder.setIsHidden(true);
+                } else {
+                    blockBuilder.setIsHidden(false);
+                }
+
+                if (i % 3 < 2 && (i + j) % 14 < 5) {
+                    emptyBlockBuilder.setOwner(playerBuilder1.build());
+                } else if(i % 7 < 3 && j > 4) {
+                    emptyBlockBuilder.setOwner(playerBuilder2.build());
+                }
+                blockBuilder.setEmptyBlock(emptyBlockBuilder.build());
+
+                blockListBuilder.addBlock(blockBuilder.build());
+            }
+        }
+        gameMapBuilder.setBlockList(blockListBuilder.build());
+        gameStateResponseBuilder.setGameMap(gameMapBuilder.build());
+        // --------------------------------
+
+
+        gameController.init(gameMapView, gameStateResponseBuilder.build());
 
         // add blocks
-        gameMapLayout.addView(gameMap);
+        gameMapLayout.addView(gameMapView);
 
         // add moveController
         moveControllerLayout.addView(moveController);

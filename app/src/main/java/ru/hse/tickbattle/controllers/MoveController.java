@@ -1,4 +1,4 @@
-package ru.hse.tickbattle.views;
+package ru.hse.tickbattle.controllers;
 
 import android.content.Context;
 import android.graphics.Typeface;

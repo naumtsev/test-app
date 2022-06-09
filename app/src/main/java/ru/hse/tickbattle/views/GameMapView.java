@@ -13,15 +13,15 @@ import java.util.ArrayList;
 import ua.org.tenletters.widget.DiagonalScrollView;
 
 
-public class GameMap extends DiagonalScrollView {
+public class GameMapView extends DiagonalScrollView {
     GridLayout grid;
     private float currentScale = 1f;
     private final ScaleGestureDetector scaleDetector;
-    private ArrayList<Block> blocks;
+    private ArrayList<BlockView> blockViews;
     int w, h;
     private final OnSelectBlockListener selectBlockListener;
 
-    public GameMap(Context context, OnSelectBlockListener selectBlockListener) {
+    public GameMapView(Context context, OnSelectBlockListener selectBlockListener) {
         super(context);
         this.selectBlockListener = selectBlockListener;
         FrameLayout.LayoutParams mainLayoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -36,17 +36,17 @@ public class GameMap extends DiagonalScrollView {
         this.h = h;
 
         grid = new GridLayout(this.getContext());
-        grid.setColumnCount(h);
-        grid.setRowCount(w);
+        grid.setColumnCount(w);
+        grid.setRowCount(h);
         grid.setUseDefaultMargins(true);
 
-        blocks = new ArrayList<>();
+        blockViews = new ArrayList<>();
 
         for (int i = 0; i < h; i += 1) {
             for (int j = 0; j < w; j += 1) {
-                Block block = new Block(grid.getContext(), selectBlockListener,  j, i);
-                blocks.add(block);
-                grid.addView(block);
+                BlockView blockView = new BlockView(grid.getContext(), selectBlockListener,  j, i);
+                blockViews.add(blockView);
+                grid.addView(blockView);
             }
         }
         addView(grid);
@@ -59,8 +59,8 @@ public class GameMap extends DiagonalScrollView {
         return true;
     }
 
-    public ArrayList<Block> getBlocks()  {
-        return blocks;
+    public ArrayList<BlockView> getBlocks()  {
+        return blockViews;
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -78,7 +78,7 @@ public class GameMap extends DiagonalScrollView {
     }
 
 
-    public Block getBlock(int x, int y) {
-        return blocks.get(y * w + x);
+    public BlockView getBlock(int x, int y) {
+        return blockViews.get(y * w + x);
     }
 }

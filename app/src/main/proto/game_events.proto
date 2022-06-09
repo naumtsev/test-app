@@ -2,34 +2,33 @@ syntax = "proto3";
 option java_package = "ru.hse";
 
 import "game.proto";
-
-message JoinToRoomRequest {
-  string login = 1;
-  string roomName = 2; // if empty string room is public, else it's private
-}
-
+import "google/protobuf/empty.proto";
 
 message RoomEvent {
-    oneof event {
-        // ROOM EVENTS
-        JoinToRoomResponse joinToRoomResponse = 1;
-        PlayerJoinedEvent playerJoinedEvent = 2;
-        PlayerDisconnectedEvent playerDisconnectedEvent = 3;
+  oneof event {
+    // ROOM EVENTS
+    JoinToRoomResponse joinToRoomResponse = 1;
+    OtherPlayerJoinedEvent otherPlayerJoinedEvent = 2;
+    OtherPlayerDisconnectedEvent otherPlayerDisconnectedEvent = 3;
+    GameStartedEvent gameStartedEvent = 4;
 
-        // GAME EVENTS
-        GameStartedEvent gameStartedEvent = 4;
-        GameStateUpdatedEvent gameStateUpdatedEvent = 5;
-        GameFinishedEvent gameFinishedEvent = 6;
-        PlayerLostEvent playerLostEvent = 7;
-    }
+    // OTHER EVENTS
+    PingRequest ping = 5;
+  }
 }
 
-message PlayerJoinedEvent {
-  string playerLogin = 1;
+message GameEvent{
+  oneof event {
+    // GAME EVENTS
+    GameStateUpdatedEvent gameStateUpdatedEvent = 1;
+    GameFinishedEvent gameFinishedEvent = 2;
+    PlayerLostEvent playerLostEvent = 3;
+  }
 }
 
-message PlayerDisconnectedEvent {
-  string playerLogin = 1;
+// нужен, чтобы проверять подключение игроков
+message PingRequest{
+  bool ping = 1;
 }
 
 message JoinToRoomResponse {
@@ -37,14 +36,25 @@ message JoinToRoomResponse {
   string comment = 2;
 }
 
-message GameStartedEvent {
-  GameState gameState = 1;
-  PlayerList players = 2;
+message JoinToRoomRequest {
+  string login = 1;
+  string roomName = 2; // if empty string room is public, else it's private
 }
 
+message OtherPlayerJoinedEvent {
+  string playerLogin = 1;
+}
+
+message OtherPlayerDisconnectedEvent {
+  string playerLogin = 1;
+}
+
+message GameStartedEvent {
+  string gameId = 1;
+}
 
 message GameStateUpdatedEvent {
-  GameState gameState = 1;
+  GameStateResponse gameState = 1;
 }
 
 message GameFinishedEvent {
@@ -55,6 +65,30 @@ message PlayerLostEvent { // other player lost
   string playerLogin = 1;
 }
 
-service GameEventService {
-    rpc joinToRoom(JoinToRoomRequest) returns (stream RoomEvent);
+service RoomEventService {
+  rpc joinToRoom(JoinToRoomRequest) returns (stream RoomEvent);
+  rpc joinToGame(JoinToGameRequest) returns (stream GameEvent);
+  rpc attackBlock(AttackRequest) returns (google.protobuf.Empty);
+  rpc surrender(SurrenderRequest) returns (google.protobuf.Empty);
+}
+
+message JoinToGameRequest {
+  string login = 1;
+  string gameId = 2;
+}
+
+message AttackRequest{
+  BlockCoordinate start = 1;
+  BlockCoordinate end = 2;
+  bool is50 = 3;
+  Player player = 4;
+}
+
+message SurrenderRequest{
+  string playerLogin = 1;
+}
+
+message BlockCoordinate{
+  int32 x = 1;
+  int32 y = 2;
 }
