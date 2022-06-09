@@ -50,27 +50,27 @@ public class MainActivity extends Activity  {
 
         LoginServiceGrpc.LoginServiceStub stub = LoginServiceGrpc.newStub(channel);
 
-        Services.LoginRequest request = Services.LoginRequest
-                .newBuilder().setName("Android").setPassword("ANTON").build();
+//        Services.LoginRequest request = Services.LoginRequest
+//                .newBuilder().setName("Android").setPassword("ANTON").build();
+////
+//        stub.login(request, new StreamObserver<Services.LoginResponse>() {
+//            @Override
+//            public void onNext(Services.LoginResponse value) {
+//                System.out.println(value.getSuccess());
+//            }
 //
-        stub.login(request, new StreamObserver<Services.LoginResponse>() {
-            @Override
-            public void onNext(Services.LoginResponse value) {
-                System.out.println(value.getSuccess());
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                System.out.println("\n\n\n" + t.getMessage());
-                System.out.println("ERROR\n\n\n");
-
-            }
-
-            @Override
-            public void onCompleted() {
-                channel.shutdownNow();
-            }
-        });
+//            @Override
+//            public void onError(Throwable t) {
+//                System.out.println("\n\n\n" + t.getMessage());
+//                System.out.println("ERROR\n\n\n");
+//
+//            }
+//
+//            @Override
+//            public void onCompleted() {
+//                channel.shutdownNow();
+//            }
+//        });
 //
 //        System.out.println(res.getSuccess());
         System.out.println("WRITE END\n\n");
@@ -103,4 +103,16 @@ public class MainActivity extends Activity  {
         ////        this.setContentView(new GameSurface(this));
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
 }

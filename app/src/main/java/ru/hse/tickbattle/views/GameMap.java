@@ -17,7 +17,7 @@ public class GameMap extends DiagonalScrollView {
     GridLayout grid;
     private float currentScale = 1f;
     private final ScaleGestureDetector scaleDetector;
-    private  ArrayList<Block> blocks;
+    private ArrayList<Block> blocks;
     int w, h;
     private final OnSelectBlockListener selectBlockListener;
 
@@ -75,5 +75,10 @@ public class GameMap extends DiagonalScrollView {
             grid.setScaleY(currentScale);
             return true;
         }
+    }
+
+
+    public Block getBlock(int x, int y) {
+        return blocks.get(y * w + x);
     }
 }

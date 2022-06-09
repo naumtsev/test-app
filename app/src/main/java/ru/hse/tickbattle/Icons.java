@@ -14,5 +14,5 @@ public class Icons {
 
     public static final String MOUNTAIN ="\uF6FD";
 
-    public static final String FORT ="\uE486";
+    public static final String FORT ="\uF015";
 }

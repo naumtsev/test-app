@@ -1,0 +1,60 @@
+syntax = "proto3";
+option java_package = "ru.hse";
+
+import "game.proto";
+
+message JoinToRoomRequest {
+  string login = 1;
+  string roomName = 2; // if empty string room is public, else it's private
+}
+
+
+message RoomEvent {
+    oneof event {
+        // ROOM EVENTS
+        JoinToRoomResponse joinToRoomResponse = 1;
+        PlayerJoinedEvent playerJoinedEvent = 2;
+        PlayerDisconnectedEvent playerDisconnectedEvent = 3;
+
+        // GAME EVENTS
+        GameStartedEvent gameStartedEvent = 4;
+        GameStateUpdatedEvent gameStateUpdatedEvent = 5;
+        GameFinishedEvent gameFinishedEvent = 6;
+        PlayerLostEvent playerLostEvent = 7;
+    }
+}
+
+message PlayerJoinedEvent {
+  string playerLogin = 1;
+}
+
+message PlayerDisconnectedEvent {
+  string playerLogin = 1;
+}
+
+message JoinToRoomResponse {
+  bool success = 1;
+  string comment = 2;
+}
+
+message GameStartedEvent {
+  GameState gameState = 1;
+  PlayerList players = 2;
+}
+
+
+message GameStateUpdatedEvent {
+  GameState gameState = 1;
+}
+
+message GameFinishedEvent {
+  string reason = 1; // took place / win / defeated by
+}
+
+message PlayerLostEvent { // other player lost
+  string playerLogin = 1;
+}
+
+service GameEventService {
+    rpc joinToRoom(JoinToRoomRequest) returns (stream RoomEvent);
+}

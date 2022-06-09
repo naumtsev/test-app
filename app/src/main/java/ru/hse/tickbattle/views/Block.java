@@ -34,6 +34,7 @@ public class Block extends FrameLayout {
         this.y = y;
         this.selectBlockListener = selectBlockListener;
 
+
         btn = new ExtendedButton(this.getContext());
 
         Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.fa_thin_100);
@@ -41,9 +42,10 @@ public class Block extends FrameLayout {
         btn.setTypeface(typeface);
         btn.setText(String.valueOf(btn.getHeight()));
 
-        units = new TextView(btn.getContext());
+        units = new TextView(this.getContext());
         units.setTextSize(15);
         units.setTypeface(typeface);
+        units.setTextColor(Color.BLACK);
 
 
         LayoutParams lp_text = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -58,6 +60,7 @@ public class Block extends FrameLayout {
         leftArrow.setY(Config.BLOCK_SIZE / 2f - 20);
         leftArrow.setX(20);
         leftArrow.setVisibility(View.INVISIBLE);
+        leftArrow.setTextColor(Color.BLACK);
 
         rightArrow = new TextView(btn.getContext());
         rightArrow.setText(Icons.RIGHT_ARROW);
@@ -66,6 +69,7 @@ public class Block extends FrameLayout {
         rightArrow.setY(Config.BLOCK_SIZE / 2f - 20);
         rightArrow.setX(Config.BLOCK_SIZE + 6);
         rightArrow.setVisibility(View.INVISIBLE);
+        rightArrow.setTextColor(Color.BLACK);
 
         upArrow = new TextView(btn.getContext());
         upArrow.setText(Icons.UP_ARROW);
@@ -74,6 +78,7 @@ public class Block extends FrameLayout {
         upArrow.setY(5);
         upArrow.setX(Config.BLOCK_SIZE / 2f + 14);
         upArrow.setVisibility(View.INVISIBLE);
+        upArrow.setTextColor(Color.BLACK);
 
         downArrow = new TextView(btn.getContext());
         downArrow.setText(Icons.DOWN_ARROW);
@@ -82,6 +87,10 @@ public class Block extends FrameLayout {
         downArrow.setY(Config.BLOCK_SIZE - 55);
         downArrow.setX(Config.BLOCK_SIZE / 2f + 14);
         downArrow.setVisibility(View.INVISIBLE);
+        downArrow.setTextColor(Color.BLACK);
+        setUnitText("132");
+        setBlockText(Icons.CROWN);
+
 
         addView(btn);
         addView(leftArrow);
@@ -89,21 +98,23 @@ public class Block extends FrameLayout {
         addView(upArrow);
         addView(downArrow);
         addView(units);
+
+
     }
 
-    void setHidden(boolean hidden) {
+    public void setHidden(boolean hidden) {
        setBackgroundColor(Color.BLACK);
     }
 
-    void setBlockText(@NonNull String text) {
+    public void setBlockText(@NonNull String text) {
         btn.setText(text);
     }
 
-    void setUnitText(@NonNull String text) {
+    public void setUnitText(@NonNull String text) {
         units.setText(text);
     }
 
-    void setBlockColor(int color) {
+    public void setBlockColor(int color) {
         btn.setBackgroundColor(color);
     }
 
@@ -153,10 +164,11 @@ public class Block extends FrameLayout {
             setSoundEffectsEnabled(false);
             setWidth(Config.BLOCK_SIZE);
             setHeight(Config.BLOCK_SIZE);
-            setBackgroundColor(Color.YELLOW);
+            setBackgroundColor(Color.parseColor("#dcdcdc"));
             setTextSize(Config.INCON_FONT_SIZE);
             setTextAlignment(TEXT_ALIGNMENT_GRAVITY);
             setOnClickListener(this);
+            setTextColor(Color.BLACK);
         }
 
         @Override

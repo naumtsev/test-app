@@ -1,0 +1,30 @@
+syntax = "proto3";
+option java_package = "ru.hse";
+
+message LoginRequest {
+  string login = 1;
+  string password = 2;
+}
+
+
+message LoginResponse {
+  bool success = 1;
+  string comment = 2;
+}
+
+message RegisterAccountRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message RegisterAccountResponse {
+  bool success = 1;
+  string comment = 2;
+}
+
+
+service AccountService {
+  rpc login(LoginRequest) returns (LoginResponse);
+  rpc registerAccount(RegisterAccountRequest) returns (RegisterAccountResponse);
+}
+
