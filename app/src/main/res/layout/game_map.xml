@@ -18,7 +18,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ScoreBoardLayout"
+            android:layout_width="196dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="false"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="30dp"
+            android:background="#26000000"
+            android:clickable="false"
+            android:minHeight="50dp"
+            app:layout_constraintStart_toStartOf="@+id/relativeLayout"
+            app:layout_constraintTop_toTopOf="@+id/relativeLayout"></androidx.constraintlayout.widget.ConstraintLayout>
+
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,11 +50,11 @@
                 android:id="@+id/moveControllerLayout"
                 android:layout_width="196dp"
                 android:layout_height="145dp"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentLeft="false"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="14dp">
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_marginRight="14dp"></androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
