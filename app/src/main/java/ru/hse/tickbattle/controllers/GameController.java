@@ -4,14 +4,14 @@ package ru.hse.tickbattle.controllers;
 import android.graphics.Color;
 
 import ru.hse.Game;
-import ru.hse.GameEvents;
-import ru.hse.tickbattle.Config;
+import ru.hse.tickbattle.UIConfig;
 import ru.hse.tickbattle.Icons;
 import ru.hse.tickbattle.objects.Direction;
 import ru.hse.tickbattle.objects.OnMoveListener;
 import ru.hse.tickbattle.objects.OnSelectBlockListener;
 import ru.hse.tickbattle.views.BlockView;
 import ru.hse.tickbattle.views.GameMapView;
+import ru.hse.tickbattle.views.ScoreBoardView;
 
 public class GameController implements OnSelectBlockListener, OnMoveListener {
     private GameMapView gameMapView;
@@ -19,13 +19,15 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
     private Game.PlayerList players;
     private Game.GameMap gameMap;
     private Game.Player player;
+    private ScoreBoardView scoreBoardView;
     private int w, h;
 
     public GameController() {
     }
 
-    public void init(GameMapView gameMapView, Game.GameStateResponse gameStateResponse) {
+    public void init(GameMapView gameMapView, ScoreBoardView scoreBoardView, Game.GameStateResponse gameStateResponse) {
         this.gameMapView = gameMapView;
+        this.scoreBoardView = scoreBoardView;
         gameMapView.init(gameStateResponse.getGameMap().getWidth(), gameStateResponse.getGameMap().getHeight());
         updateGame(gameStateResponse);
     }
@@ -55,26 +57,16 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
                 break;
         }
 
-        System.out.println(String.valueOf(tox) + " " + String.valueOf(toy));
-        System.out.println(String.valueOf(w) + " " + String.valueOf(h));
-
-        if (0 <= tox && tox < w && 0 <= toy && toy < h) {
+        if (checkCords(tox, toy)) {
             selectedBlock.x = tox;
             selectedBlock.y = toy;
         }
+
         drawMap();
     }
 
     @Override
     public void onSelectBlock(int x, int y) {
-        System.out.println(String.valueOf(x) + " " + String.valueOf(y));
-
-        if (selectedBlock != null) {
-            System.out.println("SelectBlock" + String.valueOf(selectedBlock.getClickNumber()));
-        } else {
-            System.out.println("SelectBlock");
-        }
-
         if (selectedBlock == null || selectedBlock.getX() != x || selectedBlock.getY() != y) {
             selectedBlock = new SelectedBlock(x, y);
         } else {
@@ -121,18 +113,18 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
 
         w = this.gameMap.getWidth();
         h = this.gameMap.getHeight();
-
         drawMap();
     }
 
     public void drawMap() {
+        scoreBoardView.updateScoreBoard(players);
+
         for (int i = 0; i < h; i += 1) {
             for(int j = 0; j < w; j += 1) {
                 Game.Block block = gameMap.getBlockList().getBlock(i * w + j);
 
                 BlockView blockView = gameMapView.getBlock(j, i);
-                hideBlock(blockView);
-
+                resetBlock(blockView);
 
                 if (!block.getIsHidden()) {
                     switch (block.getBlockCase()) {
@@ -159,32 +151,49 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         drawSelectedBlock();
     }
 
-
-    private void drawSelectedBlock() {
-        if (selectedBlock != null) {
-            BlockView blockView = gameMapView.getBlock(selectedBlock.x, selectedBlock.y);
-            switch (selectedBlock.getClickNumber()) {
-                case 1:
-                    blockView.setBlockColor(Color.RED);
-                    break;
-                case 2:
-                    blockView.setBlockColor(Color.YELLOW);
-                    break;
-                case 3:
-                    break;
-            }
-        }
+    private boolean checkCords(int x, int y) {
+        return 0 <= x && x < w && 0 <= y && y < h;
     }
 
+    private void drawSelectedBlock() {
+        if (selectedBlock == null) {
+            return;
+        }
 
-    private void hideBlock(BlockView blockView) {
+        BlockView blockView = gameMapView.getBlock(selectedBlock.x, selectedBlock.y);
+        switch (selectedBlock.getClickNumber()) {
+            case 1:
+                blockView.setBlockColor(Color.RED);
+                break;
+            case 2:
+                blockView.setBlockColor(Color.YELLOW);
+                break;
+        }
+
+
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+
+        for(int i = 0; i < 4; i += 1) {
+            int tox = selectedBlock.x + dx[i];
+            int toy = selectedBlock.y + dy[i];
+            if(checkCords(tox, toy)) {
+                BlockView neighboringBlockView = gameMapView.getBlock(tox, toy);
+                neighboringBlockView.setAlpha(0.5f);
+            }
+        }
+
+    }
+
+    private void resetBlock(BlockView blockView) {
+        blockView.setAlpha(1);
         blockView.setUnitText("");
         blockView.setBlockText("");
         blockView.setVisableLeftArrow(false);
         blockView.setVisableRightArrow(false);
         blockView.setVisableDownArrow(false);
         blockView.setVisableUpArrow(false);
-        blockView.setBlockColor(Config.HIDDEN_BLOCK_COLOR);
+        blockView.setBlockColor(UIConfig.HIDDEN_BLOCK_COLOR);
     }
 
 
@@ -192,7 +201,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         if (farmBlock.hasOwner()) {
            blockView.setBlockColor(Color.parseColor(farmBlock.getOwner().getColor()));
         } else {
-            blockView.setBlockColor(Config.NEUTRAL_BLOCK_COLOR);
+            blockView.setBlockColor(UIConfig.NEUTRAL_BLOCK_COLOR);
         }
 
 
@@ -207,9 +216,8 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         if (castleBlock.hasOwner()) {
             blockView.setBlockColor(Color.parseColor(castleBlock.getOwner().getColor()));
         } else {
-            blockView.setBlockColor(Config.NEUTRAL_BLOCK_COLOR);
+            blockView.setBlockColor(UIConfig.NEUTRAL_BLOCK_COLOR);
         }
-
 
         if (castleBlock.getCountArmy() != 0) {
             blockView.setUnitText(String.valueOf(castleBlock.getCountArmy()));
@@ -228,7 +236,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         if (emptyBlock.hasOwner()) {
             blockView.setBlockColor(Color.parseColor(emptyBlock.getOwner().getColor()));
         } else {
-            blockView.setBlockColor(Config.NEUTRAL_BLOCK_COLOR);
+            blockView.setBlockColor(UIConfig.NEUTRAL_BLOCK_COLOR);
         }
 
 

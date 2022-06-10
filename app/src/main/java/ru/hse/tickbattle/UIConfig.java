@@ -2,7 +2,7 @@ package ru.hse.tickbattle;
 
 import android.graphics.Color;
 
-public class Config {
+public class UIConfig {
     public static int BLOCK_SIZE = 200;
     public static int INCON_FONT_SIZE = 25;
     public static int HIDDEN_BLOCK_COLOR = Color.parseColor("#808080");

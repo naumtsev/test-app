@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
-import ru.hse.tickbattle.Config;
+import ru.hse.tickbattle.UIConfig;
 import ru.hse.tickbattle.Icons;
 import ru.hse.tickbattle.R;
 import ru.hse.tickbattle.objects.OnSelectBlockListener;
@@ -58,7 +58,7 @@ public class BlockView extends FrameLayout {
         leftArrow.setText(Icons.LEFT_ARROW);
         leftArrow.setTypeface(typeface);
         leftArrow.setElevation(1000);
-        leftArrow.setY(Config.BLOCK_SIZE / 2f - 20);
+        leftArrow.setY(UIConfig.BLOCK_SIZE / 2f - 20);
         leftArrow.setX(20);
         leftArrow.setVisibility(View.INVISIBLE);
         leftArrow.setTextColor(Color.BLACK);
@@ -67,8 +67,8 @@ public class BlockView extends FrameLayout {
         rightArrow.setText(Icons.RIGHT_ARROW);
         rightArrow.setTypeface(typeface);
         rightArrow.setElevation(1000);
-        rightArrow.setY(Config.BLOCK_SIZE / 2f - 20);
-        rightArrow.setX(Config.BLOCK_SIZE + 6);
+        rightArrow.setY(UIConfig.BLOCK_SIZE / 2f - 20);
+        rightArrow.setX(UIConfig.BLOCK_SIZE + 6);
         rightArrow.setVisibility(View.INVISIBLE);
         rightArrow.setTextColor(Color.BLACK);
 
@@ -77,7 +77,7 @@ public class BlockView extends FrameLayout {
         upArrow.setTypeface(typeface);
         upArrow.setElevation(1000);
         upArrow.setY(5);
-        upArrow.setX(Config.BLOCK_SIZE / 2f + 14);
+        upArrow.setX(UIConfig.BLOCK_SIZE / 2f + 14);
         upArrow.setVisibility(View.INVISIBLE);
         upArrow.setTextColor(Color.BLACK);
 
@@ -85,8 +85,8 @@ public class BlockView extends FrameLayout {
         downArrow.setText(Icons.DOWN_ARROW);
         downArrow.setTypeface(typeface);
         downArrow.setElevation(1000);
-        downArrow.setY(Config.BLOCK_SIZE - 55);
-        downArrow.setX(Config.BLOCK_SIZE / 2f + 14);
+        downArrow.setY(UIConfig.BLOCK_SIZE - 55);
+        downArrow.setX(UIConfig.BLOCK_SIZE / 2f + 14);
         downArrow.setVisibility(View.INVISIBLE);
         downArrow.setTextColor(Color.BLACK);
 
@@ -155,9 +155,9 @@ public class BlockView extends FrameLayout {
             super(context);
 
             setSoundEffectsEnabled(false);
-            setWidth(Config.BLOCK_SIZE);
-            setHeight(Config.BLOCK_SIZE);
-            setTextSize(Config.INCON_FONT_SIZE);
+            setWidth(UIConfig.BLOCK_SIZE);
+            setHeight(UIConfig.BLOCK_SIZE);
+            setTextSize(UIConfig.INCON_FONT_SIZE);
             setTextAlignment(TEXT_ALIGNMENT_GRAVITY);
             setOnClickListener(this);
             setTextColor(Color.BLACK);
