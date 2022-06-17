@@ -12,12 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TickBattle">
         <activity
-            android:name=".MainActivity"
+            android:name=".RoomActivity"
             android:exported="true"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".GameActivity"
+            android:exported="true"
+            android:screenOrientation="landscape">
+            <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

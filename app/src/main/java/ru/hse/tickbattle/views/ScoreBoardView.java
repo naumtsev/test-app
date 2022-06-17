@@ -2,46 +2,33 @@ package ru.hse.tickbattle.views;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import ru.hse.Game;
+import ru.hse.GameObject;
 
 public class ScoreBoardView extends TableLayout {
-    private Game.PlayerList playerList;
+    private List<GameObject.GamePlayerInfo> players = new ArrayList<>();
     private static int padding = 5;
     public ScoreBoardView(Context context) {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
-    public void updateScoreBoard(@NonNull Game.PlayerList playerList) {
-        this.playerList = playerList;
+    public void updateScoreBoard(List<GameObject.GamePlayerInfo> playerList) {
+        this.players.clear();
+        this.players.addAll(playerList);
 
-        ArrayList<Game.Player> players = new ArrayList<Game.Player>(playerList.getPlayerList());
-
-        Collections.sort(players, new Comparator<Game.Player>() {
+        Collections.sort(players, new Comparator<GameObject.GamePlayerInfo>() {
             @Override
-            public int compare(Game.Player o1, Game.Player o2) {
+            public int compare(GameObject.GamePlayerInfo o1, GameObject.GamePlayerInfo o2) {
                 return o2.getCountArmy() - o1.getCountArmy();
             }
         });
@@ -61,18 +48,18 @@ public class ScoreBoardView extends TableLayout {
 
         int padding = 7;
         for (int i = 1; i <= players.size(); i += 1) {
-            Game.Player pl = players.get(i - 1);
+            GameObject.GamePlayerInfo pl = players.get(i - 1);
 
             TableRow playerRow = new TableRow(this.getContext());
-            int color = Color.parseColor(pl.getColor());
+            int color = Color.parseColor(pl.getPlayer().getColor());
 
             View place = generateView(String.valueOf(i), color);
 
-            View login = generateView(pl.getLogin(), color);
+            View login = generateView(pl.getPlayer().getLogin(), color);
 
             View army = generateView(String.valueOf(pl.getCountArmy()), color);
 
-            if(!pl.getIsAlive()) {
+            if(!pl.getAlive()) {
                 float alpha = 0.5f;
                 place.setAlpha(alpha);
                 login.setAlpha(alpha);

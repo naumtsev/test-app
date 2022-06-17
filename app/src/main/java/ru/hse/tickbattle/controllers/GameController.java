@@ -3,7 +3,10 @@ package ru.hse.tickbattle.controllers;
 
 import android.graphics.Color;
 
+import java.util.List;
+
 import ru.hse.Game;
+import ru.hse.GameObject;
 import ru.hse.tickbattle.UIConfig;
 import ru.hse.tickbattle.Icons;
 import ru.hse.tickbattle.objects.Direction;
@@ -16,16 +19,16 @@ import ru.hse.tickbattle.views.ScoreBoardView;
 public class GameController implements OnSelectBlockListener, OnMoveListener {
     private GameMapView gameMapView;
     private SelectedBlock selectedBlock;
-    private Game.PlayerList players;
-    private Game.GameMap gameMap;
-    private Game.Player player;
+    private List<GameObject.GamePlayerInfo> players;
+    private GameObject.GameMap gameMap;
+    private GameObject.Player player;
     private ScoreBoardView scoreBoardView;
     private int w, h;
 
     public GameController() {
     }
 
-    public void init(GameMapView gameMapView, ScoreBoardView scoreBoardView, Game.GameStateResponse gameStateResponse) {
+    public void init(GameMapView gameMapView, ScoreBoardView scoreBoardView, GameObject.GameStateResponse gameStateResponse) {
         this.gameMapView = gameMapView;
         this.scoreBoardView = scoreBoardView;
         gameMapView.init(gameStateResponse.getGameMap().getWidth(), gameStateResponse.getGameMap().getHeight());
@@ -106,8 +109,8 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
     }
 
 
-    public void updateGame(Game.GameStateResponse gameStateResponse) {
-        this.players = gameStateResponse.getPlayerList();
+    public void updateGame(GameObject.GameStateResponse gameStateResponse) {
+        this.players = gameStateResponse.getGamePlayerInfoList();
         this.gameMap = gameStateResponse.getGameMap();
         this.player = gameStateResponse.getPlayer();
 
@@ -121,12 +124,12 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
 
         for (int i = 0; i < h; i += 1) {
             for(int j = 0; j < w; j += 1) {
-                Game.Block block = gameMap.getBlockList().getBlock(i * w + j);
+                GameObject.Block block = gameMap.getBlockList().getBlock(i * w + j);
 
                 BlockView blockView = gameMapView.getBlock(j, i);
                 resetBlock(blockView);
 
-                if (!block.getIsHidden()) {
+                if (!block.getHidden()) {
                     switch (block.getBlockCase()) {
                         case FARMBLOCK:
                             setFarmBlock(blockView, block.getFarmBlock());
@@ -197,7 +200,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
     }
 
 
-    private void setFarmBlock(BlockView blockView, Game.FarmBlock farmBlock) {
+    private void setFarmBlock(BlockView blockView, GameObject.FarmBlock farmBlock) {
         if (farmBlock.hasOwner()) {
            blockView.setBlockColor(Color.parseColor(farmBlock.getOwner().getColor()));
         } else {
@@ -212,7 +215,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         blockView.setBlockText(Icons.FARM);
     }
 
-    private void setCastleBlock(BlockView blockView, Game.CastleBlock castleBlock) {
+    private void setCastleBlock(BlockView blockView, GameObject.CastleBlock castleBlock) {
         if (castleBlock.hasOwner()) {
             blockView.setBlockColor(Color.parseColor(castleBlock.getOwner().getColor()));
         } else {
@@ -227,12 +230,12 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
     }
 
 
-    private void setWallBlock(BlockView blockView, Game.WallBlock wallBlock) {
+    private void setWallBlock(BlockView blockView, GameObject.WallBlock wallBlock) {
         blockView.setBlockText(Icons.WALL);
     }
 
 
-    private void setEmptyBlock(BlockView blockView, Game.EmptyBlock emptyBlock) {
+    private void setEmptyBlock(BlockView blockView, GameObject.EmptyBlock emptyBlock) {
         if (emptyBlock.hasOwner()) {
             blockView.setBlockColor(Color.parseColor(emptyBlock.getOwner().getColor()));
         } else {
