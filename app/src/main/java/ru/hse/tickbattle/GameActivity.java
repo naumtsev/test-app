@@ -79,12 +79,12 @@ public class GameActivity extends Activity  {
 
             @Override
             public void onError(Throwable t) {
-                System.out.println("ERROR\nERROR\n");
+                System.out.println("Game error\nERROR\n");
             }
 
             @Override
             public void onCompleted() {
-                // close game
+                System.out.println("OnCompleted\n");
             }
 
         };
@@ -212,6 +212,7 @@ public class GameActivity extends Activity  {
     }
 
     private void processGameEvent(Game.GameEvent event) {
+        System.out.println("Get event:" + event.getEventCase());
         switch (event.getEventCase()) {
             case PLAYERLOSTEVENT:
                 break;
