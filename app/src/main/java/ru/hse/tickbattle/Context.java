@@ -2,7 +2,7 @@ package ru.hse.tickbattle;
 
 public class Context {
     private static String login;
-    private static String serverAddress = "192.168.0.156";
+    private static String serverAddress = "192.168.0.229";
     private static int roomPort = 8080;
 
     public static String getServerAddress() {
