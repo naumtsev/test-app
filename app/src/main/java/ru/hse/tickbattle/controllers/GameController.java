@@ -2,11 +2,16 @@ package ru.hse.tickbattle.controllers;
 
 
 import android.graphics.Color;
+import android.text.BoringLayout;
 
 import java.util.List;
 
+import io.grpc.ManagedChannel;
 import ru.hse.Game;
 import ru.hse.GameObject;
+import ru.hse.GameServiceGrpc;
+import ru.hse.tickbattle.Context;
+import ru.hse.tickbattle.Player;
 import ru.hse.tickbattle.UIConfig;
 import ru.hse.tickbattle.Icons;
 import ru.hse.tickbattle.objects.Direction;
@@ -24,8 +29,14 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
     private GameObject.Player player;
     private ScoreBoardView scoreBoardView;
     private int w, h;
+    private Boolean initializated = false;
+    private GameServiceGrpc.GameServiceFutureStub stub;
+    public GameController(ManagedChannel channel) {
+        stub = GameServiceGrpc.newFutureStub(channel);
+    }
 
-    public GameController() {
+    public Boolean getInitializated() {
+        return initializated;
     }
 
     public void init(GameMapView gameMapView, ScoreBoardView scoreBoardView, GameObject.GameStateResponse gameStateResponse) {
@@ -33,6 +44,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         this.scoreBoardView = scoreBoardView;
         gameMapView.init(gameStateResponse.getGameMap().getWidth(), gameStateResponse.getGameMap().getHeight());
         updateGame(gameStateResponse);
+        initializated = true;
     }
 
 
@@ -61,10 +73,25 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         }
 
         if (checkCords(tox, toy)) {
+            Game.BlockCoordinate start = Game.BlockCoordinate.newBuilder().setX(selectedBlock.x).setY(selectedBlock.y).build();
+            Game.BlockCoordinate end = Game.BlockCoordinate.newBuilder().setX(tox).setY(toy).build();
+            Game.AttackRequest.Builder req = Game.AttackRequest.newBuilder().setStart(start).setEnd(end);
+            GameObject.Player player = GameObject.Player.newBuilder().setLogin(Context.getLogin()).setColor("").build();
+
+            req.setPlayer(player);
+            if(selectedBlock.getClickNumber() == 1) {
+                req.setIs50(false);
+            } else {
+                req.setIs50(true);
+            }
+
+
+            stub.attackBlock(req.build());
+            selectedBlock.clickNumber = 1;
+
             selectedBlock.x = tox;
             selectedBlock.y = toy;
         }
-
         drawMap();
     }
 
@@ -166,10 +193,13 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         BlockView blockView = gameMapView.getBlock(selectedBlock.x, selectedBlock.y);
         switch (selectedBlock.getClickNumber()) {
             case 1:
-                blockView.setBlockColor(Color.RED);
+                blockView.setAlpha(0.5f);
+
+//                blockView.setBlockColor(Color.RED);
                 break;
             case 2:
-                blockView.setBlockColor(Color.YELLOW);
+                blockView.setAlpha(0.2f);
+//                blockView.setBlockColor(Color.YELLOW);
                 break;
         }
 
@@ -182,7 +212,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
             int toy = selectedBlock.y + dy[i];
             if(checkCords(tox, toy)) {
                 BlockView neighboringBlockView = gameMapView.getBlock(tox, toy);
-                neighboringBlockView.setAlpha(0.5f);
+                neighboringBlockView.setAlpha(0.8f);
             }
         }
 

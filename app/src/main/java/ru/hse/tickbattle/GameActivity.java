@@ -39,6 +39,13 @@ public class GameActivity extends Activity  {
     private ConstraintLayout moveControllerLayout;
     private ConstraintLayout scoreBoardLayout;
 
+    private GameController gameController;
+    private GameMapView gameMapView;
+    private MoveController moveController;
+    private ScoreBoardView scoreBoardView;
+
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle state) {
@@ -63,10 +70,23 @@ public class GameActivity extends Activity  {
         System.out.println("Login:" + login);
         String gameID = getIntent().getExtras().getString("game_id");
         System.out.println("GAME:" + gameID);
-
         System.out.println("\n\n\n");
 
+        gameMapLayout = findViewById(R.id.gameMapLayout);
+        menuLayout = findViewById(R.id.menuLayout);
+        moveControllerLayout = findViewById(R.id.moveControllerLayout);
+        scoreBoardLayout = findViewById(R.id.scoreBoardLayout);
+
         channel = ManagedChannelBuilder.forAddress(Context.getServerAddress(), Integer.parseInt(gameID)).usePlaintext().build();
+
+
+        gameController = new GameController(channel);
+        gameMapView = new GameMapView(gameMapLayout.getContext(), gameController);
+        moveController = new MoveController(moveControllerLayout.getContext(), gameController);
+        scoreBoardView = new ScoreBoardView(scoreBoardLayout.getContext());
+
+
+
 
         Game.JoinToGameRequest req = Game.JoinToGameRequest.newBuilder().setLogin(login).setGameId(gameID).build();
 
@@ -92,21 +112,6 @@ public class GameActivity extends Activity  {
         stub = GameServiceGrpc.newStub(channel);
         stub.joinToGame(req, clientObserver);
 
-
-        FrameLayout gameMapLayout = findViewById(R.id.gameMapLayout);
-        LinearLayout menuLayout = findViewById(R.id.menuLayout);
-        ConstraintLayout moveControllerLayout = findViewById(R.id.moveControllerLayout);
-        ConstraintLayout scoreBoardLayout = findViewById(R.id.scoreBoardLayout);
-
-
-
-        GameController gameController = new GameController();
-        GameMapView gameMapView = new GameMapView(gameMapLayout.getContext(), gameController);
-        MoveController moveController = new MoveController(moveControllerLayout.getContext(), gameController);
-        ScoreBoardView scoreBoardView = new ScoreBoardView(scoreBoardLayout.getContext());
-
-
-        gameController.init(gameMapView, scoreBoardView, getGameState());
 
         // add blocks
         gameMapLayout.addView(gameMapView);
@@ -140,88 +145,29 @@ public class GameActivity extends Activity  {
     }
 
 
-
-
-    private GameObject.GameStateResponse getGameState() {
-
-        // --------------------------------
-        GameObject.GameStateResponse.Builder gameStateResponseBuilder = GameObject.GameStateResponse.newBuilder();
-        // state
-        gameStateResponseBuilder.setGameState(GameObject.GameStateResponse.GameState.IN_PROGRESS);
-
-
-        // playerList
-        List<GameObject.GamePlayerInfo> playerInfoList = new ArrayList<>();
-
-        // player1
-        GameObject.Player player1 = GameObject.Player.newBuilder().setColor("#9A57E0").setLogin("admin").build();
-        GameObject.GamePlayerInfo gamePlayerInfo1 = GameObject.GamePlayerInfo.newBuilder().setAlive(true).setCountArmy(134).setPlayer(player1).build();
-
-        playerInfoList.add(gamePlayerInfo1);
-
-        gameStateResponseBuilder.setPlayer(player1);
-
-        //player2
-        GameObject.Player player2 = GameObject.Player.newBuilder().setColor("#38FF2E").setLogin("enemy").build();
-        GameObject.GamePlayerInfo gamePlayerInfo2 = GameObject.GamePlayerInfo.newBuilder().setAlive(false).setCountArmy(0).setPlayer(player2).build();
-        playerInfoList.add(gamePlayerInfo2);
-
-        // player3
-        GameObject.Player player3 = GameObject.Player.newBuilder().setColor("#FFC373").setLogin("diedplayer").build();
-        GameObject.GamePlayerInfo gamePlayerInfo3 = GameObject.GamePlayerInfo.newBuilder().setAlive(true).setCountArmy(24).setPlayer(player2).build();
-        playerInfoList.add(gamePlayerInfo3);
-
-        gameStateResponseBuilder.addAllGamePlayerInfo(playerInfoList);
-        //
-        GameObject.GameMap.Builder gameMapBuilder = GameObject.GameMap.newBuilder();
-        gameMapBuilder.setWidth(15);
-        gameMapBuilder.setHeight(20);
-
-        GameObject.BlockList.Builder blockListBuilder = GameObject.BlockList.newBuilder();
-        for(int i = 0; i < gameMapBuilder.getHeight(); i += 1){
-            for (int j = 0; j < gameMapBuilder.getWidth(); j += 1) {
-                GameObject.Block.Builder blockBuilder  = GameObject.Block.newBuilder();
-
-
-
-                GameObject.EmptyBlock.Builder emptyBlockBuilder = GameObject.EmptyBlock.newBuilder();
-                emptyBlockBuilder.setCountArmy(i* gameMapBuilder.getWidth() + j);
-                blockBuilder.setX(j);
-                blockBuilder.setY(i);
-                if (i % 6 < 4 && j > 3 && j % 9 < 4) {
-                    blockBuilder.setHidden(true);
-                } else {
-                    blockBuilder.setHidden(false);
-                }
-
-                if (i % 3 < 2 && (i + j) % 14 < 5) {
-                    emptyBlockBuilder.setOwner(player1);
-                } else if(i % 7 < 3 && j > 4) {
-                    emptyBlockBuilder.setOwner(player2);
-                }
-                blockBuilder.setEmptyBlock(emptyBlockBuilder.build());
-
-                blockListBuilder.addBlock(blockBuilder.build());
-            }
-        }
-        gameMapBuilder.setBlockList(blockListBuilder.build());
-        gameStateResponseBuilder.setGameMap(gameMapBuilder.build());
-        // --------------------------------
-
-        return gameStateResponseBuilder.build();
-    }
-
     private void processGameEvent(Game.GameEvent event) {
+        System.out.println("Get event " + event.getEventCase());
+
         switch (event.getEventCase()) {
             case PLAYERLOSTEVENT:
                 break;
             case GAMEFINISHEDEVENT:
                 break;
-            case GAMESTATEUPDATEDEVENT:
-                System.out.println("GAMESTATE UPDATED");
+            case GAMESTATERESPONSE:
+                processGameStateUpdatedEvent(event.getGameStateResponse());
                 break;
-
         }
 
+    }
+
+
+    private void processGameStateUpdatedEvent(GameObject.GameStateResponse event) {
+            synchronized (gameController) {
+                if (!gameController.getInitializated()) {
+                    runOnUiThread(() -> gameController.init(gameMapView, scoreBoardView, event));
+                } else {
+                    runOnUiThread(() -> gameController.updateGame(event));
+                }
+            }
     }
 }
