@@ -39,7 +39,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         return initializated;
     }
 
-    public void init(GameMapView gameMapView, ScoreBoardView scoreBoardView, GameObject.GameStateResponse gameStateResponse) {
+    public synchronized void init(GameMapView gameMapView, ScoreBoardView scoreBoardView, GameObject.GameStateResponse gameStateResponse) {
         this.gameMapView = gameMapView;
         this.scoreBoardView = scoreBoardView;
         gameMapView.init(gameStateResponse.getGameMap().getWidth(), gameStateResponse.getGameMap().getHeight());
@@ -136,7 +136,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
     }
 
 
-    public void updateGame(GameObject.GameStateResponse gameStateResponse) {
+    public synchronized void updateGame(GameObject.GameStateResponse gameStateResponse) {
         this.players = gameStateResponse.getGamePlayerInfoList();
         this.gameMap = gameStateResponse.getGameMap();
         this.player = gameStateResponse.getPlayer();

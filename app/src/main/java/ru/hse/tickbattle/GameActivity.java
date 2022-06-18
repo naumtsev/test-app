@@ -162,12 +162,15 @@ public class GameActivity extends Activity  {
 
 
     private void processGameStateUpdatedEvent(GameObject.GameStateResponse event) {
-            synchronized (gameController) {
+        runOnUiThread(()-> {
                 if (!gameController.getInitializated()) {
-                    runOnUiThread(() -> gameController.init(gameMapView, scoreBoardView, event));
+                    System.out.println("Init state");
+                    gameController.init(gameMapView, scoreBoardView, event);
                 } else {
-                    runOnUiThread(() -> gameController.updateGame(event));
+                    System.out.println("update state");
+
+                    gameController.updateGame(event);
                 }
-            }
+        });
     }
 }
