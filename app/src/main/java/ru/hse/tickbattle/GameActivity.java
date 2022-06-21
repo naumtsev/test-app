@@ -158,14 +158,17 @@ public class GameActivity extends Activity  {
 
 
     private void processGameStateUpdatedEvent(GameObject.GameStateResponse event) {
-            synchronized (gameController) {
+        runOnUiThread(()-> {
                 if (!gameController.getInitializated()) {
+                    System.out.println("Init state");
+                    gameController.init(gameMapView, scoreBoardView, event);
                     runOnUiThread(() -> gameController.init(gameMapView, scoreBoardView, event));
-
                     MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.start_sound);
                 } else {
-                    runOnUiThread(() -> gameController.updateGame(event));
+                    System.out.println("update state");
+
+                    gameController.updateGame(event);
                 }
-            }
+        });
     }
 }
