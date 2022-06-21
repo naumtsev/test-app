@@ -40,6 +40,7 @@ public class GameMapView extends DiagonalScrollView {
         grid.setRowCount(h);
         grid.setUseDefaultMargins(true);
 
+
         blockViews = new ArrayList<>();
 
         for (int i = 0; i < h; i += 1) {
@@ -49,6 +50,9 @@ public class GameMapView extends DiagonalScrollView {
                 grid.addView(blockView);
             }
         }
+        grid.setScaleX(currentScale);
+        grid.setScaleY(currentScale);
+
         addView(grid);
     }
 

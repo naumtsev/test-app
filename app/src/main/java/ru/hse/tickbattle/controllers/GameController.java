@@ -2,7 +2,10 @@ package ru.hse.tickbattle.controllers;
 
 
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.text.BoringLayout;
+import android.view.View;
 
 import java.util.List;
 
@@ -35,7 +38,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         stub = GameServiceGrpc.newFutureStub(channel);
     }
 
-    public Boolean getInitializated() {
+    public synchronized Boolean getInitializated() {
         return initializated;
     }
 
@@ -156,12 +159,16 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
                 BlockView blockView = gameMapView.getBlock(j, i);
                 resetBlock(blockView);
 
-                if (!block.getHidden()) {
+                if (!block.getHidden() || block.getBlockCase() == GameObject.Block.BlockCase.WALLBLOCK) {
+
                     switch (block.getBlockCase()) {
                         case FARMBLOCK:
                             setFarmBlock(blockView, block.getFarmBlock());
                             break;
                         case WALLBLOCK:
+                            if (!block.getHidden()) {
+                                blockView.setBackgroundColor(UIConfig.NEUTRAL_BLOCK_COLOR);
+                            }
                             setWallBlock(blockView, block.getWallBlock());
                             break;
                         case EMPTYBLOCK:
@@ -175,6 +182,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
                             break;
                     }
                 }
+
             }
         }
 
@@ -193,13 +201,9 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         BlockView blockView = gameMapView.getBlock(selectedBlock.x, selectedBlock.y);
         switch (selectedBlock.getClickNumber()) {
             case 1:
-                blockView.setAlpha(0.5f);
-
-//                blockView.setBlockColor(Color.RED);
                 break;
             case 2:
-                blockView.setAlpha(0.2f);
-//                blockView.setBlockColor(Color.YELLOW);
+                blockView.setBlockColor(Color.YELLOW);
                 break;
         }
 
@@ -212,7 +216,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
             int toy = selectedBlock.y + dy[i];
             if(checkCords(tox, toy)) {
                 BlockView neighboringBlockView = gameMapView.getBlock(tox, toy);
-                neighboringBlockView.setAlpha(0.8f);
+                neighboringBlockView.setAlpha(0.6f);
             }
         }
 

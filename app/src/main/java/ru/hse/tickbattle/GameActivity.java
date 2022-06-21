@@ -162,8 +162,8 @@ public class GameActivity extends Activity  {
                 if (!gameController.getInitializated()) {
                     System.out.println("Init state");
                     gameController.init(gameMapView, scoreBoardView, event);
-                    runOnUiThread(() -> gameController.init(gameMapView, scoreBoardView, event));
                     MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.start_sound);
+                    mediaPlayer.start();
                 } else {
                     System.out.println("update state");
 
