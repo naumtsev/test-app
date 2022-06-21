@@ -2,6 +2,7 @@ package ru.hse.tickbattle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -13,9 +14,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
@@ -23,8 +21,6 @@ import ru.hse.Game;
 
 import ru.hse.GameObject;
 import ru.hse.GameServiceGrpc;
-import ru.hse.Room;
-import ru.hse.RoomServiceGrpc;
 import ru.hse.tickbattle.controllers.GameController;
 import ru.hse.tickbattle.views.GameMapView;
 import ru.hse.tickbattle.controllers.MoveController;
@@ -165,6 +161,8 @@ public class GameActivity extends Activity  {
             synchronized (gameController) {
                 if (!gameController.getInitializated()) {
                     runOnUiThread(() -> gameController.init(gameMapView, scoreBoardView, event));
+
+                    MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.start_sound);
                 } else {
                     runOnUiThread(() -> gameController.updateGame(event));
                 }
