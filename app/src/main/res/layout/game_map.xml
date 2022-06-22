@@ -62,6 +62,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/advertLayout"
+                android:layout_width="630dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="0dp"
+                android:elevation="300dp">
+
+                <TextView
+                    android:id="@+id/advertTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="100dp"
+                    android:fontFamily="@font/fa_solid_900"
+                    android:text="Advert!"
+                    android:textColor="#00FF2E"
+                    android:textSize="34sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             <FrameLayout
                 android:id="@+id/gameMapLayout"
                 android:layout_width="match_parent"

@@ -13,9 +13,9 @@
         <entry key="app/src/main/res/layout/block.xml" value="1.6" />
         <entry key="app/src/main/res/layout/block_view.xml" value="0.8" />
         <entry key="app/src/main/res/layout/game_field.xml" value="0.2" />
-        <entry key="app/src/main/res/layout/game_map.xml" value="0.6" />
+        <entry key="app/src/main/res/layout/game_map.xml" value="0.264" />
         <entry key="app/src/main/res/layout/move_controller.xml" value="0.264" />
-        <entry key="app/src/main/res/layout/room.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/room.xml" value="0.1814332247557003" />
         <entry key="app/src/main/res/layout/sample_block_view2.xml" value="0.264" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1635" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2225" />
