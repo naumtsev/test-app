@@ -40,6 +40,9 @@ public class BlockView extends FrameLayout {
         Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.fa_thin_100);
         Typeface typefaceNumbers = ResourcesCompat.getFont(getContext(), R.font.numbers);
 
+        Typeface typefaceArrows = ResourcesCompat.getFont(getContext(), R.font.fa_solid_900);
+
+
         btn.setTypeface(typeface);
         btn.setText(String.valueOf(btn.getHeight()));
 
@@ -56,40 +59,43 @@ public class BlockView extends FrameLayout {
 
         leftArrow = new TextView(btn.getContext());
         leftArrow.setText(Icons.LEFT_ARROW);
-        leftArrow.setTypeface(typeface);
+        leftArrow.setTypeface(typefaceArrows);
         leftArrow.setElevation(1000);
         leftArrow.setY(UIConfig.BLOCK_SIZE / 2f - 20);
         leftArrow.setX(20);
         leftArrow.setVisibility(View.INVISIBLE);
         leftArrow.setTextColor(Color.BLACK);
+        leftArrow.setTextSize(UIConfig.ARROW_SIZE);
 
         rightArrow = new TextView(btn.getContext());
         rightArrow.setText(Icons.RIGHT_ARROW);
-        rightArrow.setTypeface(typeface);
+        rightArrow.setTypeface(typefaceArrows);
         rightArrow.setElevation(1000);
         rightArrow.setY(UIConfig.BLOCK_SIZE / 2f - 20);
-        rightArrow.setX(UIConfig.BLOCK_SIZE + 6);
+        rightArrow.setX(UIConfig.BLOCK_SIZE - 8);
         rightArrow.setVisibility(View.INVISIBLE);
         rightArrow.setTextColor(Color.BLACK);
+        rightArrow.setTextSize(UIConfig.ARROW_SIZE);
 
         upArrow = new TextView(btn.getContext());
         upArrow.setText(Icons.UP_ARROW);
-        upArrow.setTypeface(typeface);
+        upArrow.setTypeface(typefaceArrows);
         upArrow.setElevation(1000);
         upArrow.setY(5);
-        upArrow.setX(UIConfig.BLOCK_SIZE / 2f + 14);
+        upArrow.setX(UIConfig.BLOCK_SIZE / 2f - upArrow.getWidth() / 0.2f);
         upArrow.setVisibility(View.INVISIBLE);
         upArrow.setTextColor(Color.BLACK);
+        upArrow.setTextSize(UIConfig.ARROW_SIZE);
 
         downArrow = new TextView(btn.getContext());
         downArrow.setText(Icons.DOWN_ARROW);
-        downArrow.setTypeface(typeface);
+        downArrow.setTypeface(typefaceArrows);
         downArrow.setElevation(1000);
-        downArrow.setY(UIConfig.BLOCK_SIZE - 55);
-        downArrow.setX(UIConfig.BLOCK_SIZE / 2f + 14);
+        downArrow.setY(UIConfig.BLOCK_SIZE - downArrow.getHeight() - 5);
+        downArrow.setX(UIConfig.BLOCK_SIZE / 2f - downArrow.getWidth() / 2.0f);
         downArrow.setVisibility(View.INVISIBLE);
         downArrow.setTextColor(Color.BLACK);
-
+        downArrow.setTextSize(UIConfig.ARROW_SIZE);
 
         addView(btn);
         addView(leftArrow);
@@ -97,7 +103,6 @@ public class BlockView extends FrameLayout {
         addView(upArrow);
         addView(downArrow);
         addView(units);
-
     }
 
     public void setBlockText(@NonNull String text) {

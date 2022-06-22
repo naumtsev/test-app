@@ -7,7 +7,7 @@ public class Icons {
 
     public static final String UP_ARROW ="\uF062";
 
-    public static final String DOWN_ARROW ="\uF063";
+    public static final String DOWN_ARROW ="\uF063  ";
 
 
     public static final String CASTLE ="\uF521";
