@@ -31,6 +31,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
     private GameObject.GameMap gameMap;
     private GameObject.Player player;
     private ScoreBoardView scoreBoardView;
+    private List<GameObject.Move> playerMoveList;
     private int w, h;
     private Boolean initializated = false;
     private GameServiceGrpc.GameServiceFutureStub stub;
@@ -76,25 +77,26 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         }
 
         if (checkCords(tox, toy)) {
-            Game.BlockCoordinate start = Game.BlockCoordinate.newBuilder().setX(selectedBlock.x).setY(selectedBlock.y).build();
-            Game.BlockCoordinate end = Game.BlockCoordinate.newBuilder().setX(tox).setY(toy).build();
+            GameObject.BlockCoordinate start = GameObject.BlockCoordinate.newBuilder().setX(selectedBlock.x).setY(selectedBlock.y).build();
+            GameObject.BlockCoordinate end = GameObject.BlockCoordinate.newBuilder().setX(tox).setY(toy).build();
             Game.AttackRequest.Builder req = Game.AttackRequest.newBuilder().setStart(start).setEnd(end);
             GameObject.Player player = GameObject.Player.newBuilder().setLogin(Context.getLogin()).setColor("").build();
 
             req.setPlayer(player);
-            if(selectedBlock.getClickNumber() == 1) {
-                req.setIs50(false);
-            } else {
-                req.setIs50(true);
-            }
-
-
-            stub.attackBlock(req.build());
+            req.setIs50(selectedBlock.getClickNumber() != 1);
             selectedBlock.clickNumber = 1;
-
             selectedBlock.x = tox;
             selectedBlock.y = toy;
+
+            
+            
+            try {
+                Game.PlayerMovesResponse res = stub.attackBlock(req.build()).get();
+                this.playerMoveList = res.getPlayerMoveList();
+            } catch (Exception ignored) {
+            }
         }
+
         drawMap();
     }
 
@@ -143,6 +145,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         this.players = gameStateResponse.getGamePlayerInfoList();
         this.gameMap = gameStateResponse.getGameMap();
         this.player = gameStateResponse.getPlayer();
+        this.playerMoveList = gameStateResponse.getPlayerMoveList();
 
         w = this.gameMap.getWidth();
         h = this.gameMap.getHeight();
@@ -159,15 +162,22 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
                 BlockView blockView = gameMapView.getBlock(j, i);
                 resetBlock(blockView);
 
-                if (!block.getHidden() || block.getBlockCase() == GameObject.Block.BlockCase.WALLBLOCK) {
-
+                if (!block.getHidden() || block.getBlockCase().equals(GameObject.Block.BlockCase.WALLBLOCK) || block.getBlockCase().equals(GameObject.Block.BlockCase.FARMBLOCK)) {
                     switch (block.getBlockCase()) {
                         case FARMBLOCK:
+                            if (block.getHidden()) {
+                                blockView.setBlockText(Icons.WALL);
+                                blockView.setUnitText("?");
+                                break;
+                            }
+
                             setFarmBlock(blockView, block.getFarmBlock());
                             break;
                         case WALLBLOCK:
                             if (!block.getHidden()) {
-                                blockView.setBackgroundColor(UIConfig.NEUTRAL_BLOCK_COLOR);
+                                blockView.setBlockColor(UIConfig.NEUTRAL_BLOCK_COLOR);
+                            } else {
+                                blockView.setUnitText("?");
                             }
                             setWallBlock(blockView, block.getWallBlock());
                             break;
@@ -185,12 +195,36 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
 
             }
         }
-
+        drawArrows();
         drawSelectedBlock();
     }
 
     private boolean checkCords(int x, int y) {
         return 0 <= x && x < w && 0 <= y && y < h;
+    }
+
+    private void drawArrows() {
+       for(int i = 0; i < playerMoveList.size(); i+=1) {
+           GameObject.Move move = playerMoveList.get(i);
+
+           GameObject.BlockCoordinate start = move.getStart();
+           GameObject.BlockCoordinate end = move.getEnd();
+
+           BlockView block = gameMapView.getBlock(start.getX(), start.getY());
+
+           int dx = end.getX() - start.getX();
+           int dy = end.getY() - start.getY();
+
+           if(dx == 1) {
+               block.setVisableRightArrow(true);
+           } else if(dx == -1) {
+               block.setVisableLeftArrow(true);
+           } else if(dy == -1) {
+               block.setVisableUpArrow(true);
+           } else if(dy == 1) {
+               block.setVisableDownArrow(true);
+           }
+       }
     }
 
     private void drawSelectedBlock() {
@@ -216,7 +250,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
             int toy = selectedBlock.y + dy[i];
             if(checkCords(tox, toy)) {
                 BlockView neighboringBlockView = gameMapView.getBlock(tox, toy);
-                neighboringBlockView.setAlpha(0.6f);
+                neighboringBlockView.setAlpha(0.7f);
             }
         }
 
