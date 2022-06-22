@@ -1,32 +1,57 @@
 package ru.hse.tickbattle.views;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 
-import ru.hse.tickbattle.UIConfig;
 import ru.hse.tickbattle.Icons;
 import ru.hse.tickbattle.R;
+import ru.hse.tickbattle.UIConfig;
 import ru.hse.tickbattle.objects.OnSelectBlockListener;
 
-public class BlockView extends FrameLayout {
-    private final int x;
-    private final int y;
+public class BlockView extends ConstraintLayout {
+    private int x;
+    private int y;
 
-    private final ExtendedButton btn;
-    private final TextView units;
+    private TextView units;
 
-    private final TextView leftArrow;
-    private final TextView rightArrow;
-    private final TextView upArrow;
-    private final TextView downArrow;
-    private final OnSelectBlockListener selectBlockListener;
+    private TextView leftArrow;
+    private TextView rightArrow;
+    private TextView upArrow;
+    private TextView downArrow;
+    private OnSelectBlockListener selectBlockListener;
+    private Button btn;
+
+    public BlockView(Context context) {
+        super(context);
+
+        View root = inflate(context, R.layout.block_view, this);
+
+        units = root.findViewById(R.id.unitText);
+        leftArrow = root.findViewById(R.id.leftArrow);
+        upArrow = root.findViewById(R.id.upArrow);
+        downArrow = root.findViewById(R.id.downArrow);
+        rightArrow = root.findViewById(R.id.rightArrow);
+        btn = root.findViewById(R.id.blockButton);
+    }
+
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+    }
+
+
 
     public BlockView(@NonNull Context context, OnSelectBlockListener selectBlockListener, int x, int y) {
         super(context);
@@ -34,75 +59,59 @@ public class BlockView extends FrameLayout {
         this.y = y;
         this.selectBlockListener = selectBlockListener;
 
+        View root = inflate(context, R.layout.block_view, this);
 
-        btn = new ExtendedButton(this.getContext());
+        units = root.findViewById(R.id.unitText);
+        leftArrow = root.findViewById(R.id.leftArrow);
+        upArrow = root.findViewById(R.id.upArrow);
+        downArrow = root.findViewById(R.id.downArrow);
+        rightArrow = root.findViewById(R.id.rightArrow);
+        btn = root.findViewById(R.id.blockButton);
+
+        btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectBlockListener.onSelectBlock(x, y);
+            }
+        });
 
         Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.fa_thin_100);
         Typeface typefaceNumbers = ResourcesCompat.getFont(getContext(), R.font.numbers);
-
         Typeface typefaceArrows = ResourcesCompat.getFont(getContext(), R.font.fa_solid_900);
 
-
         btn.setTypeface(typeface);
-        btn.setText(String.valueOf(btn.getHeight()));
+        btn.setTextSize(UIConfig.ICON_FONT_SIZE);
 
-        units = new TextView(this.getContext());
-        units.setTextSize(30);
-        units.setTypeface(typefaceNumbers);
         units.setTextColor(Color.BLACK);
+        units.setTypeface(typefaceNumbers);
 
-
-        LayoutParams lp_text = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp_text.setMargins(10, -15, 0, 0);
-        units.setLayoutParams(lp_text);
-        units.setElevation(1000);
-
-        leftArrow = new TextView(btn.getContext());
         leftArrow.setText(Icons.LEFT_ARROW);
-        leftArrow.setTypeface(typefaceArrows);
-        leftArrow.setElevation(1000);
-        leftArrow.setY(UIConfig.BLOCK_SIZE / 2f - 20);
-        leftArrow.setX(20);
         leftArrow.setVisibility(View.INVISIBLE);
         leftArrow.setTextColor(Color.BLACK);
         leftArrow.setTextSize(UIConfig.ARROW_SIZE);
+        leftArrow.setTypeface(typefaceArrows);
 
-        rightArrow = new TextView(btn.getContext());
         rightArrow.setText(Icons.RIGHT_ARROW);
-        rightArrow.setTypeface(typefaceArrows);
-        rightArrow.setElevation(1000);
-        rightArrow.setY(UIConfig.BLOCK_SIZE / 2f - 20);
-        rightArrow.setX(UIConfig.BLOCK_SIZE - 8);
         rightArrow.setVisibility(View.INVISIBLE);
         rightArrow.setTextColor(Color.BLACK);
         rightArrow.setTextSize(UIConfig.ARROW_SIZE);
+        rightArrow.setTypeface(typefaceArrows);
 
-        upArrow = new TextView(btn.getContext());
         upArrow.setText(Icons.UP_ARROW);
-        upArrow.setTypeface(typefaceArrows);
-        upArrow.setElevation(1000);
-        upArrow.setY(5);
-        upArrow.setX(UIConfig.BLOCK_SIZE / 2f - upArrow.getWidth() / 0.2f);
         upArrow.setVisibility(View.INVISIBLE);
         upArrow.setTextColor(Color.BLACK);
         upArrow.setTextSize(UIConfig.ARROW_SIZE);
+        upArrow.setTypeface(typefaceArrows);
 
-        downArrow = new TextView(btn.getContext());
         downArrow.setText(Icons.DOWN_ARROW);
-        downArrow.setTypeface(typefaceArrows);
-        downArrow.setElevation(1000);
-        downArrow.setY(UIConfig.BLOCK_SIZE - downArrow.getHeight() - 5);
-        downArrow.setX(UIConfig.BLOCK_SIZE / 2f - downArrow.getWidth() / 2.0f);
         downArrow.setVisibility(View.INVISIBLE);
         downArrow.setTextColor(Color.BLACK);
         downArrow.setTextSize(UIConfig.ARROW_SIZE);
+        downArrow.setTypeface(typefaceArrows);
+    }
 
-        addView(btn);
-        addView(leftArrow);
-        addView(rightArrow);
-        addView(upArrow);
-        addView(downArrow);
-        addView(units);
+    public void setBorderColor(int color) {
+        this.setBackgroundColor(color);
     }
 
     public void setBlockText(@NonNull String text) {
@@ -155,22 +164,7 @@ public class BlockView extends FrameLayout {
         }
     }
 
-    class ExtendedButton extends androidx.appcompat.widget.AppCompatButton implements View.OnClickListener {
-        public ExtendedButton(Context context) {
-            super(context);
-
-            setSoundEffectsEnabled(false);
-            setWidth(UIConfig.BLOCK_SIZE);
-            setHeight(UIConfig.BLOCK_SIZE);
-            setTextSize(UIConfig.INCON_FONT_SIZE);
-            setTextAlignment(TEXT_ALIGNMENT_GRAVITY);
-            setOnClickListener(this);
-            setTextColor(Color.BLACK);
-        }
-
-        @Override
-        public void onClick(View v) {
-            BlockView.this.selectBlock();
-        }
+    public Button getButton() {
+        return btn;
     }
 }

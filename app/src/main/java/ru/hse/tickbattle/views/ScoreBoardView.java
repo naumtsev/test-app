@@ -33,18 +33,8 @@ public class ScoreBoardView extends TableLayout {
             }
         });
 
-        this.setPadding(30, 15, 30, 30);
+        this.setPadding(30, 7, 30, 30);
         this.removeAllViews();
-
-        TableRow ScoreboardRow = new TableRow(getContext());
-        TextView scoreboardText = new TextView(getContext());
-        scoreboardText.setText("Scoreboard");
-        scoreboardText.setTextColor(Color.YELLOW);
-        scoreboardText.setTextAlignment(TEXT_ALIGNMENT_CENTER);
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-        lp.span = 3;
-        ScoreboardRow.addView(scoreboardText, lp);
-        this.addView(ScoreboardRow);
 
         int padding = 7;
         for (int i = 1; i <= players.size(); i += 1) {

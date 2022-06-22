@@ -2,10 +2,6 @@ package ru.hse.tickbattle.controllers;
 
 
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.text.BoringLayout;
-import android.view.View;
 
 import java.util.List;
 
@@ -14,7 +10,6 @@ import ru.hse.Game;
 import ru.hse.GameObject;
 import ru.hse.GameServiceGrpc;
 import ru.hse.tickbattle.Context;
-import ru.hse.tickbattle.Player;
 import ru.hse.tickbattle.UIConfig;
 import ru.hse.tickbattle.Icons;
 import ru.hse.tickbattle.objects.Direction;
@@ -89,7 +84,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
             selectedBlock.y = toy;
 
             
-            
+
             try {
                 Game.PlayerMovesResponse res = stub.attackBlock(req.build()).get();
                 this.playerMoveList = res.getPlayerMoveList();
@@ -235,6 +230,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         BlockView blockView = gameMapView.getBlock(selectedBlock.x, selectedBlock.y);
         switch (selectedBlock.getClickNumber()) {
             case 1:
+                blockView.setBorderColor(Color.YELLOW);
                 break;
             case 2:
                 blockView.setBlockColor(Color.YELLOW);
@@ -265,6 +261,7 @@ public class GameController implements OnSelectBlockListener, OnMoveListener {
         blockView.setVisableDownArrow(false);
         blockView.setVisableUpArrow(false);
         blockView.setBlockColor(UIConfig.HIDDEN_BLOCK_COLOR);
+        blockView.setBorderColor(Color.TRANSPARENT);
     }
 
 
