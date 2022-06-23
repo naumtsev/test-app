@@ -168,9 +168,9 @@ public class GameActivity extends Activity  {
 
         runOnUiThread(() -> {
             advertTextView.setText(event.getReason());
-            gameMapLayout.setAlpha(0);
+            gameMapLayout.setVisibility(View.GONE);
             advertTextView.setAlpha(1);
-            moveControllerLayout.setAlpha(0);
+            moveControllerLayout.setVisibility(View.GONE);
         });
 
         try {
